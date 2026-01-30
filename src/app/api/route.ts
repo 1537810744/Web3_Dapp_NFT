@@ -56,6 +56,7 @@ function resetGame(gameState:{
     return gameState;
 }
 
+
 export function GET(){
     gameState=resetGame(gameState);
     const [playerCards,remainingDeck] = getRandomCards(gameState.deck,2);
