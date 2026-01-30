@@ -12,7 +12,7 @@ function App() {
     <>
       <div>
         <h2>Connection</h2>
-        asssdddsfg
+        
         <div>
           status: {connection.status}
           <br />
