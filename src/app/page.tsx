@@ -7,14 +7,18 @@ export default function Page(){
   //?
   const initialDeck = ranks.map(rank => suits.map(suit => ( {"rank":rank , "suit":suit}))).flat();
   const [deck,setDeck] =  useState([{ rank: '', suit: '' }]);  
+  const [winner,setWinner] = useState('');
+  const [message,setMessage] = useState('');
   useEffect(()=>{
     setDeck(initialDeck);
+    setWinner('player');
+    setMessage('Player wins with Blackjack!');
   },[])
   return (
 
     <div className="justify-center items-center flex flex-col gap-2 p-4 h-screen bg-gray-400">
       <h1 className="text-3xl bold ">Welcome to web3 game blackjack</h1>
-      <h2 className="text-2xl bold">Message: Player wins/ dealer wins: Blackjack bust</h2>
+      <h2 className={`text-2xl bold ${winner==="player"?"bg-green-300" :"bg-red-300"}`}>{message}</h2>
       <div className="mt-4">
         <h2>Dealer's hand</h2>
         <div className="flex flex-row gap-2">
