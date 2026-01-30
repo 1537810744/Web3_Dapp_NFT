@@ -2,17 +2,20 @@
 import { useEffect, useState} from "react";
 
 export default function Page(){
-  const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-  const suits = ['♥️', '♦️', '♣️', '♠️'];  
-  //?
-  const initialDeck = ranks.map(rank => suits.map(suit => ( {"rank":rank , "suit":suit}))).flat();
-  const [deck,setDeck] =  useState([{ rank: '', suit: '' }]);  
+
   const [winner,setWinner] = useState('');
   const [message,setMessage] = useState('');
+  const [playerHand,setPlayerHand] = useState([{ rank: '', suit: '' }]);
+  const [dealerHand,setDealerHand] = useState([{ rank: '', suit: '' }]);
   useEffect(()=>{
-    setDeck(initialDeck);
-    setWinner('player');
-    setMessage('Player wins with Blackjack!');
+    const initGame = async ()=>{
+      const response = await fetch('/api',{method:'GET'});
+      const data = await response.json();
+      setPlayerHand(data.playerHand);
+      setDealerHand(data.dealerHand);
+      setMessage(data.message);
+    }
+    initGame();
   },[])
   return (
 
@@ -23,7 +26,7 @@ export default function Page(){
         <h2>Dealer's hand</h2>
         <div className="flex flex-row gap-2">
            {
-            deck.slice(0,3).map((card,index)=>(
+            dealerHand.map((card,index)=>(
               <div key={index} className="w-32 h-42 border-1 border-black bg-white rounded-md flex flex-col justify-between" > 
               <p className="self-start p-2 text-lg">{card.rank}</p> 
               <p className="self-center p-2 text-3xl">{card.suit}</p>
@@ -39,7 +42,7 @@ export default function Page(){
         <h2>Player's hand</h2>
         <div className="flex flex-row gap-2">
            {
-            deck.slice(0,3).map((card,index)=>(
+            playerHand.map((card,index)=>(
               <div key={index} className="w-32 h-42 border-1 border-black bg-white rounded-md flex flex-col justify-between" > 
               <p className="self-start p-2 text-lg">{card.rank}</p> 
               <p className="self-center p-2 text-3xl">{card.suit}</p>
