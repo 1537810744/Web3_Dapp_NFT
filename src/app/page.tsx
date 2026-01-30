@@ -1,49 +1,32 @@
-'use client'
-
-import { useConnect, useConnection, useConnectors, useDisconnect } from 'wagmi'
-
-function App() {
-  const connection = useConnection()
-  const { connect, status, error } = useConnect()
-  const connectors = useConnectors()
-  const { disconnect } = useDisconnect()
-
+export default function Page(){
   return (
-    <>
+    <div>
+      <h1>Welcome to web3 game blackjack</h1>
+      <h2>Message: Player wins/ dealer wins: Blackjack bust</h2>
       <div>
-        <h2>Connection</h2>
-        
+        <h2>Dealer's hand</h2>
         <div>
-          status: {connection.status}
-          <br />
-          addresses: {JSON.stringify(connection.addresses)}
-          <br />
-          chainId: {connection.chainId}
+          <div>card1</div>
+          <div>card1</div>
+          <div>card1</div>
         </div>
-
-        {connection.status === 'connected' && (
-          <button type="button" onClick={() => disconnect()}>
-            Disconnect
-          </button>
-        )}
       </div>
 
       <div>
-        <h2>Connect</h2>
-        {connectors.map((connector) => (
-          <button
-            key={connector.uid}
-            onClick={() => connect({ connector })}
-            type="button"
-          >
-            {connector.name}
-          </button>
-        ))}
-        <div>{status}</div>
-        <div>{error?.message}</div>
+        <h2>Player's hand</h2>
+        <div>
+          <div>card1</div>
+          <div>card1</div>
+          <div>card1</div>
+        </div>
       </div>
-    </>
+
+      <div>
+        <button>Hit</button>
+        <button>Stand</button>
+        <button>Reset</button>
+      </div>
+
+    </div>
   )
 }
-
-export default App
