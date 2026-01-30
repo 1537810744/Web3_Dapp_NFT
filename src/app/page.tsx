@@ -7,6 +7,7 @@ export default function Page(){
   const [message,setMessage] = useState('');
   const [playerHand,setPlayerHand] = useState([{ rank: '', suit: '' }]);
   const [dealerHand,setDealerHand] = useState([{ rank: '', suit: '' }]);
+  const [score,setScore] = useState(0);
   useEffect(()=>{
     const initGame = async ()=>{
       const response = await fetch('/api',{method:'GET'});
@@ -14,14 +15,50 @@ export default function Page(){
       setPlayerHand(data.playerHand);
       setDealerHand(data.dealerHand);
       setMessage(data.message);
+      setWinner(data.winner);
+      setScore(data.score);
     }
     initGame();
   },[])
+
+  async function handleHit(){
+    const response = await fetch('/api',{
+      method:'POST',
+      body:JSON.stringify({action:'hit'})
+    })
+    const data = await response.json();
+    setPlayerHand(data.playerHand);
+    setDealerHand(data.dealerHand);
+    setMessage(data.message);
+    setWinner(data.winner);
+    setScore(data.score);
+  }
+  async function handleStand(){
+    const response = await fetch('/api',{
+      method:'POST',
+      body:JSON.stringify({action:'stand'}) 
+    })
+    const data = await response.json();
+    setPlayerHand(data.playerHand);
+    setDealerHand(data.dealerHand);
+    setMessage(data.message);
+    setWinner(data.winner);
+    setScore(data.score);
+  }
+  async function handleReset(){
+    const response = await fetch('/api',{method:'GET'});
+    const data = await response.json();
+    setPlayerHand(data.playerHand);
+    setDealerHand(data.dealerHand);
+    setMessage(data.message);
+    setWinner(data.winner);
+    setScore(data.score);
+  }
   return (
 
     <div className="justify-center items-center flex flex-col gap-2 p-4 h-screen bg-gray-400">
       <h1 className="text-3xl bold ">Welcome to web3 game blackjack</h1>
-      <h2 className={`text-2xl bold ${winner==="player"?"bg-green-300" :"bg-red-300"}`}>{message}</h2>
+      <h2 className={`text-2xl bold ${winner==="player"?"bg-green-300" :"bg-red-300"}`}> score:{score}{message}</h2>
       <div className="mt-4">
         <h2>Dealer's hand</h2>
         <div className="flex flex-row gap-2">
@@ -54,9 +91,19 @@ export default function Page(){
       </div>
 
       <div className="flex flex-rwo gap-3 mt-4">
-        <button className="bg-amber-300 rounded-md p-1 ">Hit</button>
-        <button className="bg-amber-300 rounded-md p-1 ">Stand</button>
-        <button className="bg-amber-300 rounded-md p-1 ">Reset</button>
+        {
+          message===''?
+          <>
+          <button onClick={handleHit} className="bg-amber-300 rounded-md p-1 ">Hit</button>
+          <button onClick={handleStand} className="bg-amber-300 rounded-md p-1 ">Stand</button>
+          </>
+          :
+          <>
+          <button onClick={handleReset} className="bg-amber-300 rounded-md p-1 ">Reset</button>
+          </>
+        }
+        
+        
       </div>
 
     </div>
