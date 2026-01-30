@@ -29,6 +29,7 @@ export default function Page(){
               <p className="self-center p-2 text-3xl">{card.suit}</p>
               <p className="self-end p-2 text-lg">{card.rank}</p> 
               </div>
+
             ))
           }
         </div>
