@@ -1,28 +1,47 @@
+'use client';
+import { useEffect, useState} from "react";
+
 export default function Page(){
   const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
   const suits = ['♥️', '♦️', '♣️', '♠️'];  
-  //  ?
-  const initialDeck = ranks.map(rank => suits.map(suit => ( {rank , suit}))).flat();
+  //?
+  const initialDeck = ranks.map(rank => suits.map(suit => ( {"rank":rank , "suit":suit}))).flat();
+  const [deck,setDeck] =  useState([{ rank: '', suit: '' }]);  
+  useEffect(()=>{
+    setDeck(initialDeck);
+  },[])
   return (
-    console.log(initialDeck),
+
     <div className="justify-center items-center flex flex-col gap-2 p-4 h-screen bg-gray-400">
       <h1 className="text-3xl bold ">Welcome to web3 game blackjack</h1>
       <h2 className="text-2xl bold">Message: Player wins/ dealer wins: Blackjack bust</h2>
       <div className="mt-4">
         <h2>Dealer's hand</h2>
         <div className="flex flex-row gap-2">
-          <div className="w-32 h-42 border-1 border-black bg-white rounded-md">card1</div>
-          <div className="w-32 h-42 border-1 border-black bg-white rounded-md">card1</div>
-          <div className="w-32 h-42 border-1 border-black bg-white rounded-md">card1</div>
+           {
+            deck.slice(0,3).map((card,index)=>(
+              <div key={index} className="w-32 h-42 border-1 border-black bg-white rounded-md flex flex-col justify-between" > 
+              <p className="self-start p-2 text-lg">{card.rank}</p> 
+              <p className="self-center p-2 text-3xl">{card.suit}</p>
+              <p className="self-end p-2 text-lg">{card.rank}</p> 
+              </div>
+            ))
+          }
         </div>
       </div>
 
       <div>
         <h2>Player's hand</h2>
         <div className="flex flex-row gap-2">
-          <div className="w-32 h-42 border-1 border-black bg-white rounded-md">card1</div>
-          <div className="w-32 h-42 border-1 border-black bg-white rounded-md">card1</div>
-          <div className="w-32 h-42 border-1 border-black bg-white rounded-md">card1</div>
+           {
+            deck.slice(0,3).map((card,index)=>(
+              <div key={index} className="w-32 h-42 border-1 border-black bg-white rounded-md flex flex-col justify-between" > 
+              <p className="self-start p-2 text-lg">{card.rank}</p> 
+              <p className="self-center p-2 text-3xl">{card.suit}</p>
+              <p className="self-end p-2 text-lg">{card.rank}</p> 
+              </div>
+            ))
+          }
         </div>
       </div>
 
