@@ -1,7 +1,7 @@
 // src/app/api/test/route.ts
 // 导入 Azure Cosmos DB 所需的 SDK
 import { CosmosClient } from "@azure/cosmos";
-
+import { verifyMessage } from 'viem';
 // 写入函数
 export async function write(player: string, score: number) {
   try {
@@ -191,7 +191,20 @@ export async function GET(){
 
 
 export async function POST(request:Request){
-    const {action} =await request.json();
+    const reqBody = await request.json();
+    const {action} =reqBody;
+    if(action==="sign"){
+     const {address,signature,message} = reqBody;
+     console.log('Verifying signature for signature:', signature);
+     const isValid = await verifyMessage({address,message,signature});
+     console.log('Verifying signature for address:', address);
+     if(isValid){
+        return new Response("Message signature is valid",{status:200});
+     } else {
+        return new Response("Message signature is invalid",{status:400});
+     }
+    }
+    
     //when hit is clicked, give player a random card from the deck, and refresh the deck by removing the given card
     //continue until player clicks stand or busts(equal or over 21)
     //case1:player ==21, win

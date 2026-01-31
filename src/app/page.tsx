@@ -11,7 +11,7 @@ export default function Page(){
   const [score,setScore] = useState(0);
   const {address,isConnected} = useAccount();
   const [isSigned,setIsSigned] = useState(false);
-  const {signMessageAsync} = useSignMessage();
+  const {signMessage} = useSignMessage();
   useEffect(()=>{
     const initGame = async ()=>{
       const response = await fetch('/api',{method:'GET'});
@@ -61,10 +61,10 @@ export default function Page(){
   }
 
   async function handleSign(){
-    const message = 'Welcome to web3 blackjack at ' + new Date().toISOString();
+    const message = `Welcome to web3 blackjack at  ${new Date().toISOString()}`;
     //sign the message
     console.log('message:',message);
-    const signature = signMessageAsync({message});
+    const signature = await signMessage({message});
     console.log('signature:',signature);
     const response = await fetch('/api',{method:'POST',body:JSON.stringify({
       action:'sign',
@@ -72,7 +72,12 @@ export default function Page(){
       message,
       signature
     })});
-   
+    if(response.status===200){
+      alert('Message signature is valid');
+      setIsSigned(true);
+    }else{
+      alert('Message signature is invalid');
+    }
   }
   return (
 
