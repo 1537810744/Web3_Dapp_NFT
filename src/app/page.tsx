@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState} from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+
 export default function Page(){
 
   const [winner,setWinner] = useState('');
@@ -8,6 +9,7 @@ export default function Page(){
   const [playerHand,setPlayerHand] = useState([{ rank: '', suit: '' }]);
   const [dealerHand,setDealerHand] = useState([{ rank: '', suit: '' }]);
   const [score,setScore] = useState(0);
+  
   useEffect(()=>{
     const initGame = async ()=>{
       const response = await fetch('/api',{method:'GET'});
