@@ -1,3 +1,101 @@
+// src/app/api/test/route.ts
+// 导入 Azure Cosmos DB 所需的 SDK
+import { CosmosClient } from "@azure/cosmos";
+
+// 写入函数
+export async function write(player: string, score: number) {
+  try {
+    // 1. Azure Cosmos DB 配置
+    const endpoint = "https://yangyuhao.documents.azure.com:443/";
+    const key = "FdaA88esezOWNOfH2Yx4UN7HdxgGZf5OEdr591FxJbrZV19CpRbuI4vSY9GPSGimDR3wJ7PVjEX8ACDbLzomyQ==";
+    const databaseId = "PlayerScoreDB";
+    const containerId = "PlayerScores";
+
+    // 2. 创建 Cosmos DB 客户端
+    const client = new CosmosClient({ endpoint, key });
+
+    // 3. 获取数据库和容器
+    const database = client.database(databaseId);
+    const container = database.container(containerId);
+
+    // 4. 定义要写入的数据：player 和 score
+    const playerEntity = {
+      id: player, // id 与 player 相同
+      player: player,
+      score: score,
+    };
+
+    // 5. 写入/更新文档（存在则更新，不存在则新增）
+    const { resource: createdItem } = await container.items.upsert(playerEntity);
+
+    // 6. 返回成功结果
+    return {
+      success: true,
+      message: `✅ 数据写入成功！player=${player}, score=${score}`,
+      data: createdItem,
+    };
+  } catch (error) {
+    // 7. 捕获错误并返回失败结果
+    const errorMessage = (error as Error).message;
+    return {
+      success: false,
+      error: `数据写入失败：${errorMessage}`,
+    };
+  }
+}
+
+// 读取函数
+export async function read(player: string) {
+  try {
+    // 1. Azure Cosmos DB 配置
+    const endpoint = "https://yangyuhao.documents.azure.com:443/";
+    const key = "FdaA88esezOWNOfH2Yx4UN7HdxgGZf5OEdr591FxJbrZV19CpRbuI4vSY9GPSGimDR3wJ7PVjEX8ACDbLzomyQ==";
+    const databaseId = "PlayerScoreDB";
+    const containerId = "PlayerScores";
+
+    // 2. 创建 Cosmos DB 客户端
+    const client = new CosmosClient({ endpoint, key });
+
+    // 3. 获取数据库和容器
+    const database = client.database(databaseId);
+    const container = database.container(containerId);
+
+    // 4. 查询特定玩家的数据
+    const querySpec = {
+      query: "SELECT * FROM c WHERE c.id = @player",
+      parameters: [
+        {
+          name: "@player",
+          value: player
+        }
+      ]
+    };
+
+    const { resources: results } = await container.items.query(querySpec).fetchAll();
+
+    if (results.length > 0) {
+      // 5. 返回成功结果
+      return {
+        success: true,
+        data: results[0],
+      };
+    } else {
+      return {
+        success: false,
+        error: "Player not found",
+      };
+    }
+  } catch (error) {
+    // 6. 捕获错误并返回失败结果
+    const errorMessage = (error as Error).message;
+    return {
+      success: false,
+      error: `数据读取失败：${errorMessage}`,
+    };
+  }
+}
+
+
 
 
 //when the game is inited, give player and dealer 2 random cards respectively
@@ -58,6 +156,7 @@ function resetGame(gameState:{
 
 
 export function GET(){
+    write("aaaaaaaaaaaaa",114514);
     gameState=resetGame(gameState);
     const [playerCards,remainingDeck] = getRandomCards(gameState.deck,2);
     const [dealerCards,newDeck] = getRandomCards(remainingDeck,2);
