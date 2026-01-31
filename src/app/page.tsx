@@ -63,7 +63,8 @@ export default function Page(){
   async function handleSign(){
     const message = 'Welcome to web3 blackjack at ' + new Date().toISOString();
     //sign the message
-    const signature = await signMessageAsync({message});
+    console.log('message:',message);
+    const signature = signMessageAsync({message});
     console.log('signature:',signature);
     const response = await fetch('/api',{method:'POST',body:JSON.stringify({
       action:'sign',
@@ -71,15 +72,13 @@ export default function Page(){
       message,
       signature
     })});
-    if(response.ok){
-      setIsSigned(true);
-    }
+   
   }
   return (
 
     <div className="justify-center items-center flex flex-col gap-2 p-4 h-screen bg-gray-400">
       <ConnectButton /> 
-      <button className="border-black bg-amber-300 p-2 rounded-md">Sign with wallet</button>
+      <button onClick={handleSign} className="border-black bg-amber-300 p-2 rounded-md">Sign with wallet</button>
       <h1 className="text-3xl bold ">Welcome to web3 game blackjack</h1>
       <h2 className={`text-2xl bold ${winner==="player"?"bg-green-300" :"bg-red-300"}`}> score:{score}{message}</h2>
       <div className="mt-4">
