@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@azure/cosmos": "^4.9.1",
     "@azure/data-tables": "^13.3.2",
     "@tailwindcss/postcss": "^4.1.18",
     "@tanstack/react-query": "latest",

@@ -1,46 +1,45 @@
 // src/app/api/test/route.ts
-// 导入 Azure Table Storage 所需的 SDK
-import { AzureNamedKeyCredential, TableClient } from "@azure/data-tables";
+// 导入 Azure Cosmos DB 所需的 SDK
+import { CosmosClient } from "@azure/cosmos";
 
 // 处理 GET 请求（访问该接口即触发写入）
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    // 1. 从环境变量读取 Azure 存储配置（确保 .env.local 已配置）
-    const account = process.env.AZURE_STORAGE_ACCOUNT;
-    const key = process.env.AZURE_STORAGE_KEY;
-    const tableName = process.env.AZURE_TABLE_NAME;
+    // 1. Azure Cosmos DB 配置
+    const endpoint = "https://yangyuhao.documents.azure.com:443/";
+    const key = "FdaA88esezOWNOfH2Yx4UN7HdxgGZf5OEdr591FxJbrZV19CpRbuI4vSY9GPSGimDR3wJ7PVjEX8ACDbLzomyQ==";
+    const databaseId = "PlayerScoreDB";
+    const containerId = "PlayerScores";
 
-    // 2. 检查环境变量是否完整
-    if (!account || !key || !tableName) {
-      throw new Error(
-        "缺少 Azure 存储配置！请检查 .env.local 文件是否配置 AZURE_STORAGE_ACCOUNT、AZURE_STORAGE_KEY、AZURE_TABLE_NAME"
-      );
-    }
+    // 2. 创建 Cosmos DB 客户端
+    const client = new CosmosClient({ endpoint, key });
 
-    // 3. 创建 Azure Table Storage 凭证和客户端
-    const credential = new AzureNamedKeyCredential(account, key);
-    const tableClient = new TableClient(
-      `https://${account}.table.core.windows.net`, // 存储账户终结点
-      tableName, // 你的表名（比如 web3blackjack）
-      credential
-    );
+    // 3. 获取数据库和容器
+    const database = client.database(databaseId);
+    const container = database.container(containerId);
 
-    // 4. 定义要写入的数据：player=zhangsan，score=100
+    // 4. 从查询参数获取 player 和 score，如果没有则使用默认值
+    const url = new URL(request.url);
+    const player = url.searchParams.get("player") || "dsfadsadfsdfssssssi";
+    const scoreStr = url.searchParams.get("score") || "100000";
+    const score = parseInt(scoreStr, 10);
+
+    // 5. 定义要写入的数据：player 和 score
     const playerEntity = {
-      partitionKey: "zhangsan", // 对应 player 字段
-      rowKey: "score", // 固定行键保证组合主键唯一
-      score: 100, // 数字类型的分数
+      id: player, // id 与 player 相同
+      player: player,
+      score: score,
     };
 
-    // 5. 写入/更新实体（存在则更新，不存在则新增）
-    await tableClient.upsertEntity(playerEntity);
+    // 6. 写入/更新文档（存在则更新，不存在则新增）
+    const { resource: createdItem } = await container.items.upsert(playerEntity);
 
-    // 6. 返回成功响应
+    // 7. 返回成功响应
     return new Response(
       JSON.stringify({
         success: true,
-        message: "✅ 数据写入成功！player=zhangsan, score=100",
-        data: playerEntity,
+        message: `✅ 数据写入成功！player=${player}, score=${score}`,
+        data: createdItem,
       }),
       {
         status: 200,
@@ -48,7 +47,7 @@ export async function GET() {
       }
     );
   } catch (error) {
-    // 7. 捕获错误并返回失败响应
+    // 8. 捕获错误并返回失败响应
     const errorMessage = (error as Error).message;
     return new Response(
       JSON.stringify({
