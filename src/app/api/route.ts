@@ -95,7 +95,7 @@ export async function read(player: string) {
   }
 }
 
-
+const DEFAULT_PLAYER = "default_player";
 
 
 //when the game is inited, give player and dealer 2 random cards respectively
@@ -155,7 +155,7 @@ function resetGame(gameState:{
 }
 
 
-export function GET(){
+export async function GET(){
     write("aaaaaaaaaaaaa",114514);
     gameState=resetGame(gameState);
     const [playerCards,remainingDeck] = getRandomCards(gameState.deck,2);
@@ -163,6 +163,20 @@ export function GET(){
     gameState.playerHand=playerCards;   
     gameState.dealerHand=dealerCards;
     gameState.deck = newDeck;
+
+    try{
+        const data = await read(DEFAULT_PLAYER);
+        if(!data.success){
+            gameState.score=0;
+        }else {
+            gameState.score=data.data.score;
+        }
+    }catch(error){
+        console.error("Error reading player data:", error);
+        return new Response("Error reading player data from azure sql",{status:500});
+    }
+    
+
     return new Response(JSON.stringify(
         {
             playerHand:gameState.playerHand,
@@ -238,6 +252,13 @@ export async function POST(request:Request){
         }
     }else {
             return new Response("Invaild action",{status:400});
+    }
+
+    try {
+        await write(DEFAULT_PLAYER,gameState.score);
+    } catch (error) {
+        console.error("Error writing player data:", error);
+        return new Response("Error writing player data to azure sql",{status:500}); 
     }
     return new Response(JSON.stringify(
         {

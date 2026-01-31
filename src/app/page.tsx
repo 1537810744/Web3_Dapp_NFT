@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState} from "react";
-
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 export default function Page(){
 
   const [winner,setWinner] = useState('');
@@ -57,6 +57,7 @@ export default function Page(){
   return (
 
     <div className="justify-center items-center flex flex-col gap-2 p-4 h-screen bg-gray-400">
+      <ConnectButton /> 
       <h1 className="text-3xl bold ">Welcome to web3 game blackjack</h1>
       <h2 className={`text-2xl bold ${winner==="player"?"bg-green-300" :"bg-red-300"}`}> score:{score}{message}</h2>
       <div className="mt-4">
