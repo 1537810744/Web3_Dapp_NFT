@@ -156,7 +156,7 @@ function resetGame(gameState:{
 
 
 export async function GET(){
-    write("aaaaaaaaaaaaa",114514);
+   
     gameState=resetGame(gameState);
     const [playerCards,remainingDeck] = getRandomCards(gameState.deck,2);
     const [dealerCards,newDeck] = getRandomCards(remainingDeck,2);
