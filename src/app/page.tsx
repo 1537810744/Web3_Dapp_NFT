@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState} from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-
+import {useAccount} from 'wagmi';
 export default function Page(){
 
   const [winner,setWinner] = useState('');
@@ -9,7 +9,7 @@ export default function Page(){
   const [playerHand,setPlayerHand] = useState([{ rank: '', suit: '' }]);
   const [dealerHand,setDealerHand] = useState([{ rank: '', suit: '' }]);
   const [score,setScore] = useState(0);
-  
+  const {address,isConnected} = useAccount();
   useEffect(()=>{
     const initGame = async ()=>{
       const response = await fetch('/api',{method:'GET'});
@@ -19,6 +19,7 @@ export default function Page(){
       setMessage(data.message);
       setWinner(data.winner);
       setScore(data.score);
+      console.log('address:',address);
     }
     initGame();
   },[])
