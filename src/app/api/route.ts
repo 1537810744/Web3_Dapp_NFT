@@ -155,8 +155,15 @@ function resetGame(gameState:{
 }
 
 
-export async function GET(){
-   
+export async function GET(request:Request){
+    const url = new URL(request.url);
+    const address = url.searchParams.get('address');
+    if(!address){
+        console.log("No address provided, using default player");
+        return new Response("Address query parameter is required",{status:400});
+    }
+
+
     gameState=resetGame(gameState);
     const [playerCards,remainingDeck] = getRandomCards(gameState.deck,2);
     const [dealerCards,newDeck] = getRandomCards(remainingDeck,2);
@@ -165,7 +172,7 @@ export async function GET(){
     gameState.deck = newDeck;
 
     try{
-        const data = await read(DEFAULT_PLAYER);
+        const data = await read(address);
         if(!data.success){
             gameState.score=0;
         }else {
@@ -192,13 +199,14 @@ export async function GET(){
 
 export async function POST(request:Request){
     const reqBody = await request.json();
-    const {action} =reqBody;
+    const {action,address} =reqBody;
     if(action==="sign"){
      const {address,signature,message} = reqBody;
      console.log('Verifying signature for signature:', signature);
      const isValid = await verifyMessage({address,message,signature});
      console.log('Verifying signature for address:', address);
      if(isValid){
+
         return new Response("Message signature is valid",{status:200});
      } else {
         return new Response("Message signature is invalid",{status:400});
@@ -268,7 +276,7 @@ export async function POST(request:Request){
     }
 
     try {
-        await write(DEFAULT_PLAYER,gameState.score);
+        await write(address,gameState.score);
     } catch (error) {
         console.error("Error writing player data:", error);
         return new Response("Error writing player data to azure sql",{status:500}); 
