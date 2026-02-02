@@ -2,6 +2,8 @@
 import { useEffect, useState} from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import {useAccount, useSignMessage} from 'wagmi';
+import { parseAbi,createPublicClient,createWalletClient ,custom} from "viem";
+import { avalancheFuji } from "viem/chains";
 
 export default function Page(){
 
@@ -13,6 +15,8 @@ export default function Page(){
   const {address,isConnected} = useAccount();
   const [isSigned,setIsSigned] = useState(false);
   const {signMessageAsync} = useSignMessage();
+  const [publicClient ,setPublicClient] = useState<any>(null);
+  const [walletClient ,setWalletClient] = useState<any>(null);
 
   const initGame = async ()=>{
     const response = await fetch(`/api?address=${address}`,{method:'GET'});
@@ -22,8 +26,49 @@ export default function Page(){
     setMessage(data.message);
     setWinner(data.winner);
     setScore(data.score);
-  }
+    if(typeof window !== 'undefined' && (window as any).ethereum){
+        const publicClient = createPublicClient({
+          chain:avalancheFuji,
+          transport:custom((window as any).ethereum),
+        })
+        const walletClient = createWalletClient({
+          chain:avalancheFuji,
+          transport:custom((window as any).ethereum),
+        })
+        setPublicClient(publicClient);    
+        setWalletClient(walletClient);
+    }else{
+      console.error('window.ethereum is undefined');
+    }}
+
+    //怎么发送交易？？？？？？？？？？？？？？？？？？
+  // async function handleSendTx(){
+  //   //get contract address 
+  //   const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+  //   //get abi
+  //   const contractAbi = parseAbi([process.env.NEXT_PUBLIC_CONTRACT_ABI||""]);
+  //   //we need 1contract address 2function name 3params
+  //   //public client try
+  //   await publicClient.simulateContract({
+  //     address:contractAddress,
+  //     abi:contractAbi,
+  //     functionName:'sendRequest',
+  //     args:[[address],address],
+  //     accont:address
+  //   })
+  //   //wallet client
+  //   const txHash = await walletClient.writeContract({
+  //     to:contractAddress,
+  //     abi:contractAbi,
+  //     functionName:'sendRequest',
+  //     args:[[address],address],
+  //     account:address
+  //   })
+  //   console.log('txHash:',txHash);
+  // }
   
+
+
   async function handleHit(){
     const response = await fetch('/api',{
       method:'POST',
@@ -104,6 +149,7 @@ export default function Page(){
       <button onClick={handleSign} className="border-black bg-amber-300 p-2 rounded-md">Sign with wallet</button>
       <h1 className="text-3xl bold ">Welcome to web3 game blackjack</h1>
       <h2 className={`text-2xl bold ${winner==="player"?"bg-green-300" :"bg-red-300"}`}> score:{score}{message}</h2>
+      <button onClick={handleSendTx} className="bg-amber-300 rounded-md p-1 ">Get NFT</button>
       <div className="mt-4">
         <h2>Dealer's hand</h2>
         <div className="flex flex-row gap-2">
