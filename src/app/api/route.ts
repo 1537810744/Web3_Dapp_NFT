@@ -2,6 +2,7 @@
 // 导入 Azure Cosmos DB 所需的 SDK
 import { CosmosClient } from "@azure/cosmos";
 import { verifyMessage } from 'viem';
+import jwt from 'jsonwebtoken';
 // 写入函数
 export async function write(player: string, score: number) {
   try {
@@ -206,13 +207,29 @@ export async function POST(request:Request){
      const isValid = await verifyMessage({address,message,signature});
      console.log('Verifying signature for address:', address);
      if(isValid){
-
-        return new Response("Message signature is valid",{status:200});
+        const token = jwt.sign({address},process.env.JWT_SECRET||"",{expiresIn:'10h'})
+        return new Response(JSON.stringify({
+            message: "Signature is valid",
+            token: token
+        }        
+       ),{status:200});
+      
      } else {
         return new Response("Message signature is invalid",{status:400});
      }
     }
     
+    //verify token
+    const bearer = request.headers.get('bearer')||'';
+    if(!bearer){
+        return new Response("No token provided",{status:401});
+    }
+    console.log('Verifying token:', bearer);
+    const decoded = jwt.verify(bearer,process.env.JWT_SECRET||"") as {address:string};
+    console.log('Decoded token address:', decoded.address);
+    if(decoded.address!==address){
+        return new Response("Invalid token",{status:401});
+    }
     //when hit is clicked, give player a random card from the deck, and refresh the deck by removing the given card
     //continue until player clicks stand or busts(equal or over 21)
     //case1:player ==21, win

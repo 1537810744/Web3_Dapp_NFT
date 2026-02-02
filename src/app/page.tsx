@@ -27,6 +27,9 @@ export default function Page(){
   async function handleHit(){
     const response = await fetch('/api',{
       method:'POST',
+      headers:{
+        bearer:localStorage.getItem('token')||''
+      },
       body:JSON.stringify({action:'hit',address})
     })
     const data = await response.json();
@@ -39,6 +42,9 @@ export default function Page(){
   async function handleStand(){
     const response = await fetch('/api',{
       method:'POST',
+      headers:{
+        bearer:localStorage.getItem('token')||''
+      },
       body:JSON.stringify({action:'stand',address}) 
     })
     const data = await response.json();
@@ -71,6 +77,9 @@ export default function Page(){
       signature
     })});
     if(response.status===200){
+      const {token} = await response.json();
+      console.log('Received token:', token);
+      localStorage.setItem('token',token);
       alert('Message signature is valid');
       setIsSigned(true);
       initGame();

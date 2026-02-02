@@ -11,10 +11,13 @@
   "dependencies": {
     "@azure/cosmos": "^4.9.1",
     "@azure/data-tables": "^13.3.2",
+    "@chainlink/functions-toolkit": "^0.3.2",
     "@rainbow-me/rainbowkit": "^2.2.10",
     "@tailwindcss/postcss": "^4.1.18",
     "@tanstack/react-query": "latest",
     "@types/jsonwebtoken": "^9.0.10",
+    "dotenv": "^17.2.3",
+    "ethers": "^5.8.0",
     "jsonwebtoken": "^9.0.3",
     "next": "latest",
     "postcss": "^8.5.6",
