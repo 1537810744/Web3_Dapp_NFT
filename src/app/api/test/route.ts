@@ -7,7 +7,8 @@ export async function GET(request: Request) {
   try {
     // 1. Azure Cosmos DB 配置
     const endpoint = "https://yangyuhao.documents.azure.com:443/";
-    const key = "FdaA88esezOWNOfH2Yx4UN7HdxgGZf5OEdr591FxJbrZV19CpRbuI4vSY9GPSGimDR3wJ7PVjEX8ACDbLzomyQ==";
+    //FdaA88esezOWNOfH2Yx4UN7HdxgGZf5OEdr591FxJbrZV19CpRbuI4vSY9GPSGimDR3wJ7PVjEX8ACDbLzomyQ==
+    const key = "above";
     const databaseId = "PlayerScoreDB";
     const containerId = "PlayerScores";
 
