@@ -8,7 +8,7 @@
 并且Go提供RestfulAPI 接口供前端访问；通过Docker打包为多个Image镜像，实现程序的容器化运行；Chainlink
 实现链上链下数据互通；Azure提供稳定存储与计算能力。
 
-bilibili视频
+项目详细的开发流程我已经上传到B站，欢迎大家指正！
 【【项目实战】Dapp Web3全栈开发】 https://www.bilibili.com/video/BV1vEFCzFEjL/?share_source=copy_web&vd_source=8733ea87ee7ae5ea7f6843a71bb71bde
 
 ![Project Framework](./framework.png)
