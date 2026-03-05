@@ -42,30 +42,30 @@ export default function Page(){
     }}
 
     //怎么发送交易？？？？？？？？？？？？？？？？？？
-  // async function handleSendTx(){
-  //   //get contract address 
-  //   const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
-  //   //get abi
-  //   const contractAbi = parseAbi([process.env.NEXT_PUBLIC_CONTRACT_ABI||""]);
-  //   //we need 1contract address 2function name 3params
-  //   //public client try
-  //   await publicClient.simulateContract({
-  //     address:contractAddress,
-  //     abi:contractAbi,
-  //     functionName:'sendRequest',
-  //     args:[[address],address],
-  //     accont:address
-  //   })
-  //   //wallet client
-  //   const txHash = await walletClient.writeContract({
-  //     to:contractAddress,
-  //     abi:contractAbi,
-  //     functionName:'sendRequest',
-  //     args:[[address],address],
-  //     account:address
-  //   })
-  //   console.log('txHash:',txHash);
-  // }
+  async function handleSendTx(){
+    //get contract address 
+    const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+    //get abi
+    const contractAbi = parseAbi([process.env.NEXT_PUBLIC_CONTRACT_ABI||""]);
+    //we need 1contract address 2function name 3params
+    //public client try
+    await publicClient.simulateContract({
+      address:contractAddress,
+      abi:contractAbi,
+      functionName:'sendRequest',
+      args:[[address],address],
+      accont:address
+    })
+    //wallet client
+    const txHash = await walletClient.writeContract({
+      to:contractAddress,
+      abi:contractAbi,
+      functionName:'sendRequest',
+      args:[[address],address],
+      account:address
+    })
+    console.log('txHash:',txHash);
+  }
   
 
 
