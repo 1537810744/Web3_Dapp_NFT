@@ -10,5 +10,6 @@
 
 项目详细的开发流程我已经上传到B站，欢迎大家指正！
 【【项目实战】Dapp Web3全栈开发】 https://www.bilibili.com/video/BV1vEFCzFEjL/?share_source=copy_web&vd_source=8733ea87ee7ae5ea7f6843a71bb71bde
-
+项目框架图我已经通过tldraw分享，统一欢迎大家批判指正！
+https://www.tldraw.com/p/0vGABXiWXqW1bYv0LaIzU?d=v-2974.-2290.7479.4302.page
 ![Project Framework](./framework.png)
